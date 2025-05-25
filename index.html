@@ -1,173 +1,721 @@
-<!DOCTYPE html>
-<html lang="tr">
+<script type="text/javascript">
+        var gk_isXlsx = false;
+        var gk_xlsxFileLookup = {};
+        var gk_fileData = {};
+        function filledCell(cell) {
+          return cell !== '' && cell != null;
+        }
+        function loadFileData(filename) {
+        if (gk_isXlsx && gk_xlsxFileLookup[filename]) {
+            try {
+                var workbook = XLSX.read(gk_fileData[filename], { type: 'base64' });
+                var firstSheetName = workbook.SheetNames[0];
+                var worksheet = workbook.Sheets[firstSheetName];
+
+                // Convert sheet to JSON to filter blank rows
+                var jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1, blankrows: false, defval: '' });
+                // Filter out blank rows (rows where all cells are empty, null, or undefined)
+                var filteredData = jsonData.filter(row => row.some(filledCell));
+
+                // Heuristic to find the header row by ignoring rows with fewer filled cells than the next row
+                var headerRowIndex = filteredData.findIndex((row, index) =>
+                  row.filter(filledCell).length >= filteredData[index + 1]?.filter(filledCell).length
+                );
+                // Fallback
+                if (headerRowIndex === -1 || headerRowIndex > 25) {
+                  headerRowIndex = 0;
+                }
+
+                // Convert filtered JSON back to CSV
+                var csv = XLSX.utils.aoa_to_sheet(filteredData.slice(headerRowIndex)); // Create a new sheet from filtered array of arrays
+                csv = XLSX.utils.sheet_to_csv(csv, { header: 1 });
+                return csv;
+            } catch (e) {
+                console.error(e);
+                return "";
+            }
+        }
+        return gk_fileData[filename] || "";
+        }
+        </script><!DOCTYPE html>
+<html lang="en">
 <head>
     <meta charset="UTF-8">
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Setup Listesi</title>
-    <style>
+    <title>alp.brando | Music Prodüktör</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&family=Montserrat:wght@500;700;900&display=swap" rel="stylesheet">
+    <style type="text/css">
+        *, ::before, ::after {
+            --tw-border-spacing-x: 0;
+            --tw-border-spacing-y: 0;
+            --tw-translate-x: 0;
+            --tw-translate-y: 0;
+            --tw-rotate: 0;
+            --tw-skew-x: 0;
+            --tw-skew-y: 0;
+            --tw-scale-x: 1;
+            --tw-scale-y: 1;
+            --tw-pan-x:  ;
+            --tw-pan-y:  ;
+            --tw-pinch-zoom:  ;
+            --tw-scroll-snap-strictness: proximity;
+            --tw-gradient-from-position:  ;
+            --tw-gradient-via-position:  ;
+            --tw-gradient-to-position:  ;
+            --tw-ordinal:  ;
+            --tw-slashed-zero:  ;
+            --tw-numeric-figure:  ;
+            --tw-numeric-spacing:  ;
+            --tw-numeric-fraction:  ;
+            --tw-ring-inset:  ;
+            --tw-ring-offset-width: 0px;
+            --tw-ring-offset-color: #fff;
+            --tw-ring-color: rgb(59 130 246 / 0.5);
+            --tw-ring-offset-shadow: 0 0 #0000;
+            --tw-ring-shadow: 0 0 #0000;
+            --tw-shadow: 0 0 #0000;
+            --tw-shadow-colored: 0 0 #0000;
+            --tw-blur:  ;
+            --tw-brightness:  ;
+            --tw-contrast:  ;
+            --tw-grayscale:  ;
+            --tw-hue-rotate:  ;
+            --tw-invert:  ;
+            --tw-saturate:  ;
+            --tw-sepia:  ;
+            --tw-drop-shadow:  ;
+            --tw-backdrop-blur:  ;
+            --tw-backdrop-brightness:  ;
+            --tw-backdrop-contrast:  ;
+            --tw-backdrop-grayscale:  ;
+            --tw-backdrop-hue-rotate:  ;
+            --tw-backdrop-invert:  ;
+            --tw-backdrop-opacity:  ;
+            --tw-backdrop-saturate:  ;
+            --tw-backdrop-sepia:  ;
+            --tw-contain-size:  ;
+            --tw-contain-layout:  ;
+            --tw-contain-paint:  ;
+            --tw-contain-style:  ;
+        }
+
+        ::backdrop {
+            --tw-border-spacing-x: 0;
+            --tw-border-spacing-y: 0;
+            --tw-translate-x: 0;
+            --tw-translate-y: 0;
+            --tw-rotate: 0;
+            --tw-skew-x: 0;
+            --tw-skew-y: 0;
+            --tw-scale-x: 1;
+            --tw-scale-y: 1;
+            --tw-pan-x:  ;
+            --tw-pan-y:  ;
+            --tw-pinch-zoom:  ;
+            --tw-scroll-snap-strictness: proximity;
+            --tw-gradient-from-position:  ;
+            --tw-gradient-via-position:  ;
+            --tw-gradient-to-position:  ;
+            --tw-ordinal:  ;
+            --tw-slashed-zero:  ;
+            --tw-numeric-figure:  ;
+            --tw-numeric-spacing:  ;
+            --tw-numeric-fraction:  ;
+            --tw-ring-inset:  ;
+            --tw-ring-offset-width: 0px;
+            --tw-ring-offset-color: #fff;
+            --tw-ring-color: rgb(59 130 246 / 0.5);
+            --tw-ring-offset-shadow: 0 0 #0000;
+            --tw-ring-shadow: 0 0 #0000;
+            --tw-shadow: 0 0 #0000;
+            --tw-shadow-colored: 0 0 #0000;
+            --tw-blur:  ;
+            --tw-brightness:  ;
+            --tw-contrast:  ;
+            --tw-grayscale:  ;
+            --tw-hue-rotate:  ;
+            --tw-invert:  ;
+            --tw-saturate:  ;
+            --tw-sepia:  ;
+            --tw-drop-shadow:  ;
+            --tw-backdrop-blur:  ;
+            --tw-backdrop-brightness:  ;
+            --tw-backdrop-contrast:  ;
+            --tw-backdrop-grayscale:  ;
+            --tw-backdrop-hue-rotate:  ;
+            --tw-backdrop-invert:  ;
+            --tw-backdrop-opacity:  ;
+            --tw-backdrop-saturate:  ;
+            --tw-backdrop-sepia:  ;
+            --tw-contain-size:  ;
+            --tw-contain-layout:  ;
+            --tw-contain-paint:  ;
+            --tw-contain-style:  ;
+        }
+
+        *, ::before, ::after {
+            box-sizing: border-box;
+            border-width: 0;
+            border-style: solid;
+            border-color: #e5e7eb;
+        }
+
+        ::before, ::after {
+            --tw-content: '';
+        }
+
+        html, :host {
+            line-height: 1.5;
+            -webkit-text-size-adjust: 100%;
+            -moz-tab-size: 4;
+            -o-tab-size: 4;
+            tab-size: 4;
+            font-family: Inter, system-ui, sans-serif;
+            font-feature-settings: normal;
+            font-variation-settings: normal;
+            -webkit-tap-highlight-color: transparent;
+        }
+
         body {
-            font-family: 'Georgia', serif;
-            background-color: #fff0f5;
-            color: #4a3c3c;
+            margin: 0;
+            line-height: inherit;
+        }
+
+        hr {
+            height: 0;
+            color: inherit;
+            border-top-width: 1px;
+        }
+
+        abbr:where([title]) {
+            -webkit-text-decoration: underline dotted;
+            text-decoration: underline dotted;
+        }
+
+        h1, h2, h3, h4, h5, h6 {
+            font-size: inherit;
+            font-weight: inherit;
+        }
+
+        a {
+            color: inherit;
+            text-decoration: inherit;
+        }
+
+        b, strong {
+            font-weight: bolder;
+        }
+
+        code, kbd, samp, pre {
+            font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+            font-feature-settings: normal;
+            font-variation-settings: normal;
+            font-size: 1em;
+        }
+
+        small {
+            font-size: 80%;
+        }
+
+        sub, sup {
+            font-size: 75%;
+            line-height: 0;
+            position: relative;
+            vertical-align: baseline;
+        }
+
+        sub {
+            bottom: -0.25em;
+        }
+
+        sup {
+            top: -0.5em;
+        }
+
+        table {
+            text-indent: 0;
+            border-color: inherit;
+            border-collapse: collapse;
+        }
+
+        button, input, optgroup, select, textarea {
+            font-family: inherit;
+            font-feature-settings: inherit;
+            font-variation-settings: inherit;
+            font-size: 100%;
+            font-weight: inherit;
+            line-height: inherit;
+            letter-spacing: inherit;
+            color: inherit;
             margin: 0;
             padding: 0;
-            line-height: 1.6;
-            background-image: url('data:image/svg+xml,%3Csvg width="40" height="40" viewBox="0 0 40 40" xmlns="http://www.w3.org/2000/svg"%3E%3Cg fill="%23ffb6c1" fill-opacity="0.1" fill-rule="evenodd"%3E%3Cpath d="M20 20c2-2 5-2 7 0s2 5 0 7-5 2-7 0-2-5 0-7zm0 2c-1 1-3 1-4 0s-1-3 0-4 3-1 4 0 1 3 0 4z"/%3E%3C/g%3E%3C/svg%3E');
         }
+
+        button, select {
+            text-transform: none;
+        }
+
+        button, input:where([type='button']), input:where([type='reset']), input:where([type='submit']) {
+            -webkit-appearance: button;
+            background-color: transparent;
+            background-image: none;
+        }
+
+        :-moz-focusring {
+            outline: auto;
+        }
+
+        :-moz-ui-invalid {
+            box-shadow: none;
+        }
+
+        progress {
+            vertical-align: baseline;
+        }
+
+        ::-webkit-inner-spin-button, ::-webkit-outer-spin-button {
+            height: auto;
+        }
+
+        [type='search'] {
+            -webkit-appearance: textfield;
+            outline-offset: -2px;
+        }
+
+        ::-webkit-search-decoration {
+            -webkit-appearance: none;
+        }
+
+        ::-webkit-file-upload-button {
+            -webkit-appearance: button;
+            font: inherit;
+        }
+
+        summary {
+            display: list-item;
+        }
+
+        blockquote, dl, dd, h1, h2, h3, h4, h5, h6, hr, figure, p, pre {
+            margin: 0;
+        }
+
+        fieldset {
+            margin: 0;
+            padding: 0;
+        }
+
+        legend {
+            padding: 0;
+        }
+
+        ol, ul, menu {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+        }
+
+        dialog {
+            padding: 0;
+        }
+
+        textarea {
+            resize: vertical;
+        }
+
+        input::-moz-placeholder, textarea::-moz-placeholder {
+            opacity: 1;
+            color: #9ca3af;
+        }
+
+        input::placeholder, textarea::placeholder {
+            opacity: 1;
+            color: #9ca3af;
+        }
+
+        button, [role="button"] {
+            cursor: pointer;
+        }
+
+        :disabled {
+            cursor: default;
+        }
+
+        img, svg, video, canvas, audio, iframe, embed, object {
+            display: block;
+            vertical-align: middle;
+        }
+
+        img, video {
+            max-width: 100%;
+            height: auto;
+        }
+
+        [hidden] {
+            display: none;
+        }
+
         .container {
-            max-width: 900px;
-            margin: 40px auto;
-            padding: 30px;
-            background-color: #fff;
-            border-radius: 20px;
-            box-shadow: 0 8px 25px rgba(255, 182, 193, 0.3);
-            border: 2px solid #ffe4e1;
+            width: 100%;
         }
-        h1 {
-            text-align: center;
-            color: #ff69b4;
-            font-size: 2.8em;
-            margin-bottom: 40px;
-            text-transform: uppercase;
-            letter-spacing: 3px;
-            font-family: 'Courier New', cursive;
-            text-shadow: 1px 1px 2px rgba(255, 105, 180, 0.2);
-        }
-        h2 {
-            color: #ff85a2;
-            font-size: 1.6em;
-            margin-top: 30px;
-            padding-bottom: 8px;
-            border-bottom: 2px dashed #ffb6c1;
-            font-family: 'Georgia', serif;
-        }
-        p {
-            font-size: 1.1em;
-            margin: 12px 0;
-        }
-        .price {
-            font-weight: bold;
-            color: #ff1493;
-        }
-        a {
-            color: #ff69b4;
-            text-decoration: none;
-            font-style: italic;
-            transition: color 0.3s ease;
-        }
-        a:hover {
-            color: #ff4500;
-            text-decoration: underline;
-        }
-        .item {
-            background-color: #fffafa;
-            padding: 20px;
-            margin-bottom: 25px;
-            border-radius: 15px;
-            border: 1px solid #ffe4e1;
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-        }
-        .item:hover {
-            transform: scale(1.02);
-            box-shadow: 0 10px 20px rgba(255, 182, 193, 0.4);
-        }
-        hr {
-            border: 0;
-            height: 2px;
-            background: linear-gradient(to right, #ffb6c1, #fff, #ffb6c1);
-            margin: 40px 0;
-        }
-        .total {
-            text-align: center;
-            font-size: 2em;
-            color: #ff1493;
-            font-weight: bold;
-            background-color: #ffe4e1;
-            padding: 10px;
-            border-radius: 10px;
-            box-shadow: 0 4px 10px rgba(255, 20, 147, 0.2);
-        }
-        @media (max-width: 600px) {
+
+        @media (min-width: 640px) {
             .container {
-                margin: 20px;
-                padding: 20px;
+                max-width: 640px;
             }
-            h1 {
-                font-size: 2.2em;
+        }
+
+        @media (min-width: 768px) {
+            .container {
+                max-width: 768px;
             }
-            h2 {
-                font-size: 1.4em;
+        }
+
+        @media (min-width: 1024px) {
+            .container {
+                max-width: 1024px;
             }
-            p {
-                font-size: 1em;
+        }
+
+        @media (min-width: 1280px) {
+            .container {
+                max-width: 1280px;
             }
-            .total {
-                font-size: 1.6em;
+        }
+
+        @media (min-width: 1536px) {
+            .container {
+                max-width: 1536px;
+            }
+        }
+
+        .fixed {
+            position: fixed;
+        }
+
+        .absolute {
+            position: absolute;
+        }
+
+        .relative {
+            position: relative;
+        }
+
+        .inset-0 {
+            inset: 0px;
+        }
+
+        .top-0 {
+            top: 0px;
+        }
+
+        .left-0 {
+            left: 0px;
+        }
+
+        .z-50 {
+            z-index: 50;
+        }
+
+        .z-10 {
+            z-index: 10;
+        }
+
+        .mx-auto {
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .flex {
+            display: flex;
+        }
+
+        .gap-2 {
+            gap: 0.5rem;
+        }
+
+        .gap-4 {
+            gap: 1rem;
+        }
+
+        .gap-8 {
+            gap: 2rem;
+        }
+
+        .justify-between {
+            justify-content: space-between;
+        }
+
+        .items-center {
+            align-items: center;
+        }
+
+        .w-full {
+            width: 100%;
+        }
+
+        .w-1\/2 {
+            width: 50%;
+        }
+
+        .min-h-screen {
+            min-height: 100vh;
+        }
+
+        .px-4 {
+            padding-left: 1rem;
+            padding-right: 1rem;
+        }
+
+        .py-4 {
+            padding-top: 1rem;
+            padding-bottom: 1rem;
+        }
+
+        .py-8 {
+            padding-top: 2rem;
+            padding-bottom: 2rem;
+        }
+
+        .pt-16 {
+            padding-top: 4rem;
+        }
+
+        .text-center {
+            text-align: center;
+        }
+
+        .font-heading {
+            font-family: Montserrat, system-ui, sans-serif;
+        }
+
+        .text-xl {
+            font-size: 1.25rem;
+            line-height: 1.75rem;
+        }
+
+        .text-5xl {
+            font-size: 3rem;
+            line-height: 1;
+        }
+
+        .font-bold {
+            font-weight: 700;
+        }
+
+        .text-dark-300 {
+            --tw-text-opacity: 1;
+            color: rgb(179 179 179 / var(--tw-text-opacity));
+        }
+
+        .text-primary-400 {
+            --tw-text-opacity: 1;
+            color: rgb(51 142 255 / var(--tw-text-opacity));
+        }
+
+        .text-secondary-400 {
+            --tw-text-opacity: 1;
+            color: rgb(173 51 255 / var(--tw-text-opacity));
+        }
+
+        .bg-dark-950 {
+            --tw-bg-opacity: 1;
+            background-color: rgb(13 13 13 / var(--tw-bg-opacity));
+        }
+
+        .bg-dark-900\/95 {
+            background-color: rgb(26 26 26 / 0.95);
+        }
+
+        .bg-gradient-to-b {
+            background-image: linear-gradient(to bottom, var(--tw-gradient-stops));
+        }
+
+        .from-dark-950\/50 {
+            --tw-gradient-from: rgb(13 13 13 / 0.5) var(--tw-gradient-from-position);
+            --tw-gradient-to: rgb(13 13 13 / 0) var(--tw-gradient-to-position);
+            --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to);
+        }
+
+        .via-dark-950\/70 {
+            --tw-gradient-to: rgb(13 13 13 / 0) var(--tw-gradient-to-position);
+            --tw-gradient-stops: var(--tw-gradient-from), rgb(13 13 13 / 0.7) var(--tw-gradient-via-position), var(--tw-gradient-to);
+        }
+
+        .to-dark-950 {
+            --tw-gradient-to: #0d0d0d var(--tw-gradient-to-position);
+        }
+
+        .backdrop-blur-md {
+            --tw-backdrop-blur: blur(12px);
+            -webkit-backdrop-filter: var(--tw-backdrop-blur) var(--tw-backdrop-brightness) var(--tw-backdrop-contrast) var(--tw-backdrop-grayscale) var(--tw-backdrop-hue-rotate) var(--tw-backdrop-invert) var(--tw-backdrop-opacity) var(--tw-backdrop-saturate) var(--tw-backdrop-sepia);
+            backdrop-filter: var(--tw-backdrop-blur) var(--tw-backdrop-brightness) var(--tw-backdrop-contrast) var(--tw-backdrop-grayscale) var(--tw-backdrop-hue-rotate) var(--tw-backdrop-invert) var(--tw-backdrop-opacity) var(--tw-backdrop-saturate) var(--tw-backdrop-sepia);
+        }
+
+        .transition-colors {
+            transition-property: color, background-color, border-color, text-decoration-color, fill, stroke;
+            transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+            transition-duration: 150ms;
+        }
+
+        .hover\:text-primary-400:hover {
+            --tw-text-opacity: 1;
+            color: rgb(51 142 255 / var(--tw-text-opacity));
+        }
+
+        .hover\:text-secondary-400:hover {
+            --tw-text-opacity: 1;
+            color: rgb(173 51 255 / var(--tw-text-opacity));
+        }
+
+        :root {
+            color-scheme: dark;
+        }
+
+        body {
+            min-height: 100vh;
+            overflow-x: hidden;
+            --tw-bg-opacity: 1;
+            background-color: rgb(13 13 13 / var(--tw-bg-opacity));
+            --tw-text-opacity: 1;
+            color: rgb(255 255 255 / var(--tw-text-opacity));
+            font-family: 'Inter', sans-serif;
+        }
+
+        h1, h2, h3, h4, h5, h6 {
+            font-family: 'Montserrat', sans-serif;
+        }
+
+        .text-gradient {
+            background-image: linear-gradient(to right, var(--tw-gradient-stops));
+            --tw-gradient-from: #66aaff var(--tw-gradient-from-position);
+            --tw-gradient-to: rgb(102 170 255 / 0) var(--tw-gradient-to-position);
+            --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to);
+            --tw-gradient-to: #ad33ff var(--tw-gradient-to-position);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            --tw-bg-opacity: 1;
+            background-color: rgb(26 26 26 / var(--tw-bg-opacity));
+        }
+
+        ::-webkit-scrollbar-thumb {
+            border-radius: 9999px;
+            --tw-bg-opacity: 1;
+            background-color: rgb(0 68 153 / var(--tw-bg-opacity));
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            --tw-bg-opacity: 1;
+            background-color: rgb(0 91 204 / var(--tw-bg-opacity));
+        }
+
+        /* Background particles animation */
+        .particle {
+            position: absolute;
+            border-radius: 9999px;
+            animation: float 15s infinite ease-in-out;
+        }
+
+        @keyframes float {
+            0%, 100% {
+                transform: translateY(0) translateX(0);
+            }
+            25% {
+                transform: translateY(-30px) translateX(20px);
+            }
+            50% {
+                transform: translateY(-15px) translateX(-20px);
+            }
+            75% {
+                transform: translateY(30px) translateX(20px);
             }
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <h1>eylül İçin Beyaz Setup Listesi</h1>
-
-        <div class="item">
-            <h2>1. Nexus Thunder Tavsiye Sistem</h2>
-            <p><span class="price">Fiyat:</span> 55.999 TL</p>
-            <p><a href="https://www.incehesap.com/nexus-thunder-tavsiye-sistem-fiyati-76188/" target="_blank">Nexus Thunder - İnceHesap</a></p>
-        </div>
-
-        <div class="item">
-            <h2>2. MSI Pro MP243XPDE 23.8" Full HD Monitör (2 Adet)</h2>
-            <p><span class="price">Fiyat:</span> 15.429 TL (2 Adet)</p>
-            <p><a href="https://www.incehesap.com/msi-pro-mp243xpde-23-8-1920x1080-1ms-100hz-ips-anti-glare-full-hd-monitor-fiyati-75536/" target="_blank">MSI Pro MP243XPDE - İnceHesap</a></p>
-        </div>
-
-        <div class="item">
-            <h2>3. IQUNIX Magi65 Low Profile Mekanik Klavye</h2>
-            <p><span class="price">Fiyat:</span> 6.349 TL</p>
-            <p><a href="https://wraithesports.com/products/iqunix-magi65-aluminyum-low-profile-mekanik-klavye?variant=48751868281025" target="_blank">IQUNIX Magi65 - Wraith Esports</a></p>
-        </div>
-
-        <div class="item">
-            <h2>4. ATK Blazing Sky X1 Wireless Mouse</h2>
-            <p><span class="price">Fiyat:</span> 3.399 TL</p>
-            <p><a href="https://wraithesports.com/products/vgn-atk-blazing-sky-x1-wireless-mouse?variant=48460006162625" target="_blank">ATK Blazing Sky X1 - Wraith Esports</a></p>
-        </div>
-
-        <div class="item">
-            <h2>5. Razer Barracuda Mercury Kablosuz Gaming Kulaklık</h2>
-            <p><span class="price">Fiyat:</span> 8.190 TL</p>
-            <p><a href="https://www.itopya.com/razer-barracuda-mercury-kablosuz-gaming-kulaklik_u23779" target="_blank">Razer Barracuda Mercury - İtopya</a></p>
-        </div>
-
-        <div class="item">
-            <h2>6. Fifine Ampligame AM8T XLR/USB RGB Dinamik Mikrofon Seti</h2>
-            <p><span class="price">Fiyat:</span> 4.679 TL</p>
-            <p><a href="https://www.itopya.com/fifine-ampligame-am8t-xlrusb-rgb-dinamik-mikrofon-seti_u28649" target="_blank">Fifine Ampligame AM8T - İtopya</a></p>
-        </div>
-
-        <div class="item">
-            <h2>7. Rampage KL-R21 Grand Serisi Fildişi Oyuncu Koltuğu</h2>
-            <p><span class="price">Fiyat:</span> 15.053 TL</p>
-            <p><a href="https://www.vatanbilgisayar.com/rampage-kl-r21-grand-serisi-siyah-oyuncu-koltugu.html" target="_blank">Rampage KL-R21 - Vatan Bilgisayar</a></p>
-        </div>
-
-        <div class="item">
-            <h2>8. Corsair Elgato Stream Deck Mk.2 White</h2>
-            <p><span class="price">Fiyat:</span> 13.499 TL</p>
-            <p><a href="https://www.trendyol.com/corsair/elgato-10gba9911-stream-deck-mk-2-white-p-832937906?boutiqueId=61&merchantId=901200&utm_source=aff_t&utm_medium=cpc&utm_campaign=akakce_urun_listeleme&adjust_tracker=ejav2ha_253g15b&adjust_campaign=akakce_urun_listeleme&v=1.95.2" target="_blank">Corsair Elgato Stream Deck Mk.2 White - Trendyol</a></p>
-        </div>
-
-        <div class="item">
-            <h2>9. RAMPAGE RM-1 2X15W + 34W TF/BT/AUX/USB RGB Gaming Soundbar Speaker</h2>
-            <p><span class="price">Fiyat:</span> 4.199 TL</p>
-            <p><a href="https://www.itopya.com/rampage-rm-1-2x15w-34w-tfbtauxusb-rgb-gaming-soundbar-speaker_u28630" target="_blank">RAMPAGE RM-1 Soundbar Speaker - İtopya</a></p>
-        </div>
-
-        <hr>
-        <h2>Toplam Fiyat</h2>
-        <p class="total">142.225 TL</p>
+    <div class="min-h-screen bg-dark-950 text-white">
+        <header class="fixed top-0 left-0 w-full bg-dark-900/95 backdrop-blur-md py-4 z-50">
+            <div class="container mx-auto px-4 flex justify-between items-center">
+                <div class="flex items-center gap-2 font-heading">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-music h-6 w-6 text-primary-500">
+                        <path d="M9 18V5l12-2v13"></path>
+                        <circle cx="6" cy="18" r="3"></circle>
+                        <circle cx="18" cy="16" r="3"></circle>
+                    </svg>
+                    <span class="🐍">alp.brando 🐍</span>
+                </div>
+                <div class="flex gap-4">
+                    <a href="https://instagram.com/alp.brando" target="_blank" rel="noopener noreferrer" class="text-dark-300 hover:text-primary-400 transition-colors" aria-label="Instagram">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-instagram">
+                            <rect width="20" height="20" x="2" y="2" rx="5" ry="5"></rect>
+                            <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path>
+                            <line x1="17.5" x2="17.51" y1="6.5" y2="6.5"></line>
+                        </svg>
+                    </a>
+                    <a href="https://discord.gg/alpbrando" target="_blank" rel="noopener noreferrer" class="text-dark-300 hover:text-secondary-400 transition-colors" aria-label="Discord">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-disc">
+                            <circle cx="12" cy="12" r="10"></circle>
+                            <circle cx="12" cy="12" r="2"></circle>
+                        </svg>
+                    </a>
+                </div>
+            </div>
+        </header>
+        <main>
+            <section class="min-h-screen flex items-center relative overflow-hidden pt-16">
+                <div class="absolute inset-0">
+                    <div class="particle" style="width: 101.813px; height: 164.31px; left: 3.50486%; top: 14.958%; opacity: 0.1074; animation-delay: 3.9906s; animation-duration: 27.4093s; background: radial-gradient(circle, rgba(153, 0, 255, 0.3) 0%, rgba(153, 0, 255, 0) 70%);"></div>
+                    <div class="particle" style="width: 89.2433px; height: 65.2137px; left: 37.6804%; top: 6.81134%; opacity: 0.144383; animation-delay: 4.08915s; animation-duration: 15.7764s; background: radial-gradient(circle, rgba(153, 0, 255, 0.3) 0%, rgba(153, 0, 255, 0) 70%);"></div>
+                    <div class="particle" style="width: 117.027px; height: 125.115px; left: 12.1974%; top: 45.8715%; opacity: 0.120152; animation-delay: 4.164s; animation-duration: 25.7215s; background: radial-gradient(circle, rgba(153, 0, 255, 0.3) 0%, rgba(153, 0, 255, 0) 70%);"></div>
+                    <div class="particle" style="width: 127.105px; height: 105.267px; left: 82.6498%; top: 82.1573%; opacity: 0.122511; animation-delay: 4.50117s; animation-duration: 21.5289s; background: radial-gradient(circle, rgba(0, 114, 255, 0.3) 0%, rgba(0, 114, 255, 0) 70%);"></div>
+                    <div class="particle" style="width: 144.138px; height: 106.802px; left: 11.5002%; top: 75.3829%; opacity: 0.114377; animation-delay: 3.02429s; animation-duration: 21.7126s; background: radial-gradient(circle, rgba(0, 114, 255, 0.3) 0%, rgba(0, 114, 255, 0) 70%);"></div>
+                    <div class="particle" style="width: 105.871px; height: 129.845px; left: 50.5171%; top: 62.1627%; opacity: 0.115239; animation-delay: 0.771934s; animation-duration: 20.1835s; background: radial-gradient(circle, rgba(0, 114, 255, 0.3) 0%, rgba(0, 114, 255, 0) 70%);"></div>
+                    <div class="particle" style="width: 176.221px; height: 81.3206px; left: 56.713%; top: 63.1339%; opacity: 0.102863; animation-delay: 0.300968s; animation-duration: 22.2392s; background: radial-gradient(circle, rgba(153, 0, 255, 0.3) 0%, rgba(153, 0, 255, 0) 70%);"></div>
+                    <div class="particle" style="width: 114.382px; height: 189.835px; left: 29.8543%; top: 58.743%; opacity: 0.124719; animation-delay: 3.13534s; animation-duration: 23.5399s; background: radial-gradient(circle, rgba(153, 0, 255, 0.3) 0%, rgba(153, 0, 255, 0) 70%);"></div>
+                    <div class="particle" style="width: 139.185px; height: 132.961px; left: 25.4544%; top: 61.8949%; opacity: 0.12388; animation-delay: 2.53734s; animation-duration: 15.4856s; background: radial-gradient(circle, rgba(153, 0, 255, 0.3) 0%, rgba(153, 0, 255, 0) 70%);"></div>
+                    <div class="particle" style="width: 163.296px; height: 131.602px; left: 87.8683%; top: 24.9721%; opacity: 0.110847; animation-delay: 3.88979s; animation-duration: 26.2983s; background: radial-gradient(circle, rgba(0, 114, 255, 0.3) 0%, rgba(0, 114, 255, 0) 70%);"></div>
+                    <div class="particle" style="width: 168.917px; height: 122.347px; left: 79.8415%; top: 88.5802%; opacity: 0.0615125; animation-delay: 3.28111s; animation-duration: 26.3039s; background: radial-gradient(circle, rgba(0, 114, 255, 0.3) 0%, rgba(0, 114, 255, 0) 70%);"></div>
+                    <div class="particle" style="width: 75.4612px; height: 123.253px; left: 45.1318%; top: 46.6832%; opacity: 0.072496; animation-delay: 1.44957s; animation-duration: 17.9528s; background: radial-gradient(circle, rgba(0, 114, 255, 0.3) 0%, rgba(0, 114, 255, 0) 70%);"></div>
+                </div>
+                <div class="absolute inset-0 bg-gradient-to-b from-dark-950/50 via-dark-950/70 to-dark-950"></div>
+                <div class="container mx-auto px-4 relative z-10">
+                    <div class="max-w-3xl mx-auto text-center">
+                        <h1 class="font-heading font-bold text-5xl text-gradient bg-gradient-to-r from-primary-400 via-secondary-400 to-primary-400" style="opacity: 1; transform: none;">alp.brando</h1>
+                    </div>
+                    <div class="flex flex-col-reverse lg:flex-row gap-8 py-8 items-center lg:items-start">
+                        <div class="w-full lg:w-1/2 text-center lg:text-left">
+                            <div style="backdrop-filter: blur(8px); background: rgba(26,26,26,0.6); border-radius: 1.5rem; padding: 2rem 1.5rem; box-shadow: 0 8px 32px 0 rgba(31,38,135,0.15);" class="mb-4 flex flex-col items-center">
+                                <img src="alp.jpg" alt="Alp Brando Artist Photo" class="rounded-full shadow-xl border-4 border-primary-400 mb-4" style="width:160px; height:160px; object-fit:cover;">
+                                <div class="text-center">
+                                    <div class="font-heading font-bold text-lg text-white">Alp Brando 🐍</div>
+                                    <div class="text-primary-400 text-sm mb-2">Music Prodüktör</div>
+                                </div>
+                            </div>
+                            <p class="text-dark-300 text-base md:text-lg text-center lg:text-left">ben alperen sikişmeyi severim</p>
+                        </div>
+                        <div class="w-full lg:w-1/2 flex flex-col items-center lg:items-end">
+                            <div class="relative w-full max-w-[420px] p-0.5 rounded-2xl bg-gradient-to-tr from-primary-400 via-secondary-400 to-primary-400 shadow-2xl group transition-all duration-300">
+                                <div class="bg-dark-950 rounded-2xl p-6 flex flex-col items-center gap-4 shadow-lg relative overflow-hidden" style="min-height: 420px;">
+                                    <div class="absolute -top-10 -right-10 w-32 h-32 bg-gradient-to-br from-primary-400/30 to-secondary-400/10 rounded-full blur-2xl opacity-60 animate-pulse"></div>
+                                    <iframe class="transition-transform duration-300 group-hover:scale-105 group-hover:shadow-2xl" style="border-radius:16px; box-shadow:0 8px 32px 0 rgba(51,142,255,0.18);" src="https://open.spotify.com/embed/artist/3XjAYzwW3zGIi0OetnEIvU?utm_source=generator" width="100%" height="352" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
     </div>
 </body>
 </html>
